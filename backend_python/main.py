@@ -15,7 +15,7 @@ app = FastAPI()
 # 1. LOAD THE DUAL MODELS
 # ==========================================
 try:
-    nlp_model = joblib.load('credit_brain.pkl')
+    nlp_model = joblib.load('credit_brain.pkl')//aa
     pd_model = joblib.load('pd_model.pkl')
 except Exception as e:
     nlp_model = None
