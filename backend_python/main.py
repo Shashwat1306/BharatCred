@@ -7,20 +7,39 @@ from typing import List
 import uvicorn
 import warnings
 import re
+import os
+from pathlib import Path
 warnings.filterwarnings("ignore", category=UserWarning)
 
 app = FastAPI()
+BASE_DIR = Path(__file__).resolve().parent
 
 # ==========================================
 # 1. LOAD THE DUAL MODELS
 # ==========================================
 try:
-    nlp_model = joblib.load('credit_brain.pkl')
-    pd_model = joblib.load('pd_model.pkl')
+    nlp_model = joblib.load(BASE_DIR / 'credit_brain.pkl')
+    pd_model = joblib.load(BASE_DIR / 'pd_model.pkl')
 except Exception as e:
     nlp_model = None
     pd_model = None
     print(f"⚠️ Warning: Model files not found! Error: {e}")
+
+
+@app.get("/")
+def root():
+    return {"service": "bharatcred-backend-python", "status": "ok"}
+
+
+@app.get("/health")
+def health():
+    return {
+        "status": "ok",
+        "models_loaded": {
+            "nlp_model": nlp_model is not None,
+            "pd_model": pd_model is not None,
+        },
+    }
 
 class Transaction(BaseModel):
     description: str
@@ -185,4 +204,6 @@ def calculate_score(txns: List[Transaction]):
     }
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    host = os.getenv("PYTHON_HOST", "0.0.0.0")
+    port = int(os.getenv("PYTHON_PORT", "8000"))
+    uvicorn.run(app, host=host, port=port)

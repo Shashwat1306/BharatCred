@@ -3,6 +3,9 @@ import axios from 'axios';
 import { parsePdfTransactions, analyzeCreditWithAI } from '../services/openaiService.js';
 import CreditReport from '../models/CreditReport.js';
 
+const PYTHON_API_BASE = process.env.PYTHON_API_BASE || 'http://127.0.0.1:8000';
+const PYTHON_SCORE_URL = new URL('/get-score', PYTHON_API_BASE).toString();
+
 // Resolve worker path from node_modules (import.meta.resolve works in Node 22+)
 pdfjsLib.GlobalWorkerOptions.workerSrc = import.meta.resolve('pdfjs-dist/legacy/build/pdf.worker.mjs');
 
@@ -55,7 +58,7 @@ export const analyzeFromPdf = async (req, res) => {
         }
 
         // STEP 3: Send clean transactions to Python ML model (/get-score)
-        const mlResponse = await axios.post('http://127.0.0.1:8000/get-score', transactions);
+        const mlResponse = await axios.post(PYTHON_SCORE_URL, transactions);
         const mlData = mlResponse.data;
 
         // STEP 4: Generate structured AI summary

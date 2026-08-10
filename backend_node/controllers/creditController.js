@@ -2,9 +2,12 @@ import axios from 'axios';
 import { analyzeCreditWithAI } from '../services/openaiService.js';
 import CreditReport from '../models/CreditReport.js';
 
+const PYTHON_API_BASE = process.env.PYTHON_API_BASE || 'http://127.0.0.1:8000';
+const PYTHON_SCORE_URL = new URL('/get-score', PYTHON_API_BASE).toString();
+
 export const analyzeCredit = async (req, res) => {
     try {
-        const pythonResponse = await axios.post('http://127.0.0.1:8000/get-score', req.body);
+        const pythonResponse = await axios.post(PYTHON_SCORE_URL, req.body);
         const mlData = pythonResponse.data;
 
         const aiSummary = await analyzeCreditWithAI(mlData);

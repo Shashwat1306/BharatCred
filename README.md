@@ -130,11 +130,24 @@ Create a `.env` file inside `backend_node/`:
 # MongoDB
 DB_URL=mongodb+srv://<user>:<password>@cluster.mongodb.net/bharatcred
 
-# OpenAI
-OPENAI_API_KEY=sk-...
+# LLM provider config used by backend_node/services/openaiService.js
+API_BASE=https://aipipe.org/openai/v1
+TOKEN=<your-provider-token>
+
+# Python ML service base URL used by Node controllers
+# Example (local):  http://127.0.0.1:8000
+# Example (deploy): https://bharatcred-ml.your-domain.com
+PYTHON_API_BASE=http://127.0.0.1:8000
 
 # Port (optional, defaults to 5000)
 PORT=5000
+```
+
+Optional env vars for running `backend_python/main.py` directly:
+
+```env
+PYTHON_HOST=0.0.0.0
+PYTHON_PORT=8000
 ```
 
 Create a `.env.local` file inside `frontend/`:
@@ -194,7 +207,7 @@ You need to run all three services concurrently.
 
 ```bash
 cd backend_python
-uvicorn main:app --host 127.0.0.1 --port 8000 --reload
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 **Terminal 2 — Node Bridge Server**

@@ -7,7 +7,7 @@ import { analyzeCredit } from './controllers/creditController.js';
 import { chat } from './controllers/chatController.js';
 import { analyzeFromPdf } from './controllers/pdfController.js';
 import { getUserReports } from './controllers/creditController.js';
-
+    
 // Connect to MongoDB
 mongoose
   .connect(process.env.DB_URL)
@@ -16,6 +16,7 @@ mongoose
 
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
+const PORT = Number(process.env.PORT) || 5000;
 
 app.use(cors());
 app.use(express.json());
@@ -25,4 +26,4 @@ app.post('/api/analyze-pdf', upload.single('file'), analyzeFromPdf);
 app.post('/api/chat', chat);
 app.get('/api/reports/:userId', getUserReports);
 
-app.listen(5000, () => console.log('Node Bridge running on port 5000'));
+app.listen(PORT, () => console.log(`Node Bridge running on port ${PORT}`));
