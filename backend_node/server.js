@@ -26,4 +26,12 @@ app.post('/api/analyze-pdf', upload.single('file'), analyzeFromPdf);
 app.post('/api/chat', chat);
 app.get('/api/reports/:userId', getUserReports);
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
+app.head('/health', (req, res) => {
+  res.sendStatus(200);
+});
+
 app.listen(PORT, () => console.log(`Node Bridge running on port ${PORT}`));
